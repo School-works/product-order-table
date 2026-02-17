@@ -13,5 +13,5 @@ if ($connection->connect_error) {
     header("Location: error.html");
     exit;
 }
-
 ?>
+
