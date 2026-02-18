@@ -7,7 +7,7 @@ if (!isset($_GET["customerNumber"])) {
 
 $customerNumber = $_GET["customerNumber"];
 
-$stmt1 = $connection->prepare("SELECT customerName FROM customers WHERE customerNumber = ?");
+$stmt1 = $connection->prepare("SELECT contactFirstName, contactLastName FROM customers WHERE customerNumber = ?");
 $stmt1->bind_param("i", $customerNumber);
 $stmt1->execute();
 $result1 = $stmt1->get_result();
@@ -22,17 +22,31 @@ $result2 = $stmt2->get_result();
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Customer Orders</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<h2>Orders for <?php echo $customer["customerName"]; ?></h2>
+<div class="container">
 
-<a href="showtable.php">⬅ Back to Customers</a>
+<?php $displayFirstName = isset($customer["contactFirstName"]) ? htmlspecialchars($customer["contactFirstName"]) : ''; ?>
+<?php $displayLastName = isset($customer["contactLastName"]) ? htmlspecialchars($customer["contactLastName"]) : ''; ?>
 
+<?php
+$fullName = trim($displayFirstName . ' ' . $displayLastName);
+if ($fullName === '') {
+    $fullName = 'Unknown Customer';
+}
+?>
+
+<h2>Orders for <?php echo $fullName; ?></h2>
+
+<a class="btn secondary" href="showtable.php">⬅ Back to Customers</a>
+    
 <br><br>
 
-<table border="1" cellpadding="5">
+<table>
 <tr>
     <th>Order Number</th>
     <th>Order Date</th>
@@ -44,10 +58,11 @@ $result2 = $stmt2->get_result();
 if ($result2->num_rows > 0) {
     while($row = $result2->fetch_assoc()) {
         echo "<tr>";
-        echo "<td>".$row["orderNumber"]."</td>";
-        echo "<td>".$row["orderDate"]."</td>";
-        echo "<td>".$row["status"]."</td>";
-        echo "<td>".$row["comments"]."</td>";
+        echo "<td>".htmlspecialchars($row["orderNumber"])."</td>";
+        echo "<td>".htmlspecialchars($row["orderDate"])."</td>";
+        echo "<td>".htmlspecialchars($row["status"])."</td>";
+        $comments = (isset($row["comments"]) && trim($row["comments"]) !== '') ? htmlspecialchars($row["comments"]) : 'N/A';
+        echo "<td>".$comments."</td>";
         echo "</tr>";
     }
 } else {
@@ -65,3 +80,4 @@ $stmt1->close();
 $stmt2->close();
 $connection->close();
 ?>
+

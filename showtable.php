@@ -7,45 +7,55 @@ $result = $connection->query($sql);
 
 <!DOCTYPE html>
 <html>
+
 <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Customers</title>
+    <link rel="stylesheet" href="css/style.css">
+    
 </head>
+
 <body>
 
-<h2>Customers</h2>
+<div class="container">
 
-<a href="addcustomer.php">➕ Add New Customer</a>
+    <h2>Customers</h2>
 
-<br><br>
+    <a class="btn" href="addcustomer.php">➕ Add New Customer</a>
 
-<table border="1" cellpadding="5">
-<tr>
-    <th>ID</th>
-    <th>Name</th>
-    <th>Phone</th>
-    <th>Country</th>
-</tr>
+    <br><br>
 
-<?php
-if ($result->num_rows > 0) {
-    while($row = $result->fetch_assoc()) {
-        echo "<tr>";
-        echo "<td>".$row["customerNumber"]."</td>";
-        echo "<td>
-                <a href='showorders.php?customerNumber=".$row["customerNumber"]."'>
-                ".$row["customerName"]."
-                </a>
-              </td>";
-        echo "<td>".$row["phone"]."</td>";
-        echo "<td>".$row["country"]."</td>";
-        echo "</tr>";
-    }
-}
-?>
+    <table>
+        <tr>
+            <th>Contact Name</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Country</th>
+            <th>ID</th>
 
-</table>
+        </tr>
+
+        <?php
+        if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                                echo "<tr>";
+                                echo "<td>" . htmlspecialchars($row["contactLastName"]) . " " . htmlspecialchars($row["contactFirstName"]) . "</td>";
+                                echo "<td><a class=\"meta\" href='showorders.php?customerNumber=" . $row["customerNumber"] . "'>" . htmlspecialchars($row["customerName"]) . "</a></td>";
+                                echo "<td class=\"small\">" . htmlspecialchars($row["phone"]) . "</td>";
+                                echo "<td class=\"small\">" . htmlspecialchars($row["country"]) . "</td>";
+                                echo "<td class=\"small\">" . htmlspecialchars($row["customerNumber"]) . "</td>";
+
+                                echo "</tr>";
+                        }
+        }
+        ?>
+
+    </table>
+
+</div>
 
 </body>
+
 </html>
 
 <?php
